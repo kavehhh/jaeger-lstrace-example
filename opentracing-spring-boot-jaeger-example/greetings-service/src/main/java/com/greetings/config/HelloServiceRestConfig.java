@@ -9,13 +9,13 @@ import io.jaegertracing.internal.propagation.B3TextMapCodec;
 import io.jaegertracing.zipkin.ZipkinSender;
 import io.opentracing.propagation.Format;
 import io.jaegertracing.internal.reporters.RemoteReporter;
+import io.jaegertracing.internal.samplers.ConstSampler;
 
 import io.opentracing.Tracer;
 
 @Configuration
 @EnableAutoConfiguration
 public class HelloServiceRestConfig {
-
   @Bean("helloRestTemplate")
   public RestTemplate getRestTemplate() {
     RestTemplate restTemplate = new RestTemplate();
@@ -23,10 +23,11 @@ public class HelloServiceRestConfig {
   }
 
   @Bean
-    public Tracer jaegerTracer() throws Exception {
+  public Tracer jaegerTracer() throws Exception {
         return new JaegerTracer.Builder("jaeger-demo")
+              .withSampler(new ConstSampler(true))
 			        .registerInjector(Format.Builtin.HTTP_HEADERS, new B3TextMapCodec())
 			        .registerExtractor(Format.Builtin.HTTP_HEADERS, new B3TextMapCodec())
 			        .build();
-    }
+  }
 }
