@@ -21,8 +21,6 @@ app = Flask(__name__)
 def index():
     print(request.headers)
     span = tracer.current_span()
-    print(hex(span.context.trace_id))
-    print(hex(span.context.span_id))
     return 'Hello world'
 
 if __name__ == '__main__':
